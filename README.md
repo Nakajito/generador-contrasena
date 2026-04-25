@@ -85,6 +85,29 @@ curl http://localhost:8000/healthz/
 docker compose down
 ```
 
+## Deploy en Coolify / Railway / Nixpacks-based PaaS
+
+**Recomendado** — usar Dockerfile:
+- Build pack: `Dockerfile`
+- Dockerfile path: `docker/Dockerfile`
+- Port: `8000`
+
+**Alternativa** — buildpack (Nixpacks/Heroku):
+- `nixpacks.toml` y `Procfile` incluidos en repo.
+- Nixpacks corre `collectstatic` en fase `build`, `migrate` + `gunicorn` en `start`.
+- Procfile fallback con `release: collectstatic + migrate` y `web: gunicorn`.
+
+**Variables obligatorias** (todas las plataformas):
+```
+DJANGO_SETTINGS_MODULE=settings.production
+DJANGO_SECRET_KEY=<token_urlsafe(50)>
+DJANGO_ALLOWED_HOSTS=tu-dominio.com
+DJANGO_CSRF_TRUSTED_ORIGINS=https://tu-dominio.com
+```
+
+`entrypoint.sh` regenera el manifest si `staticfiles.json` falta — protección contra
+buildpacks que saltan `collectstatic`.
+
 ## Hardening incluido
 
 | Medida | Detalle |

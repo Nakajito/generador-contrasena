@@ -1,0 +1,26 @@
+# Nixpacks build for Coolify / Railway / similar buildpack platforms.
+# If you can choose Dockerfile in your platform, prefer docker/Dockerfile.
+
+providers = ["python"]
+
+[phases.setup]
+nixPkgs = ["python313", "uv", "curl"]
+
+[phases.install]
+cmds = [
+    "uv sync --frozen --no-dev",
+]
+
+[phases.build]
+cmds = [
+    "DJANGO_SETTINGS_MODULE=settings.production DJANGO_SECRET_KEY=build-dummy DJANGO_ALLOWED_HOSTS=* uv run python manage.py collectstatic --noinput",
+]
+
+[start]
+cmd = "uv run python manage.py migrate --noinput && uv run gunicorn settings.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --access-logfile - --error-logfile -"
+
+[variables]
+DJANGO_SETTINGS_MODULE = "settings.production"
+PYTHONUNBUFFERED = "1"
+PYTHONDONTWRITEBYTECODE = "1"
+PORT = "8000"

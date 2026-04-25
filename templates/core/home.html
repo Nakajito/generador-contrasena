@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Generador de contraseñas seguras{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CRYPT_TYPE — Generador de contraseñas",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Genera contraseñas criptográficamente seguras. Sin persistencia en servidor, sin tracking.",
+  "inLanguage": "es"
+}
+</script>
+{% endblock %}
 {% block content %}
     <section class="card password-display" aria-labelledby="output-label">
         <h1 class="sr-only" id="output-label">Contraseña generada</h1>

@@ -5,7 +5,14 @@
       "Bash(uv pip *)",
       "Bash(DJANGO_SETTINGS_MODULE=settings.test uv run python -c \"import django; django.setup\\(\\); from django.conf import settings; print\\('OK', settings.DEBUG, settings.INSTALLED_APPS[-2:]\\)\")",
       "Bash(uv run *)",
-      "Bash(chmod +x /home/nakajito/proyectos/generador-contrasena/docker/entrypoint.sh)"
+      "Bash(chmod +x /home/nakajito/proyectos/generador-contrasena/docker/entrypoint.sh)",
+      "Bash(DJANGO_SETTINGS_MODULE=settings.production DJANGO_SECRET_KEY=x DJANGO_ALLOWED_HOSTS=example.com DJANGO_CSRF_TRUSTED_ORIGINS=https://example.com uv run python -c \"from django.conf import settings; import django; django.setup\\(\\); print\\('STORAGES:', getattr\\(settings, 'STORAGES', None\\)\\); print\\('STATICFILES_STORAGE attr exists:', hasattr\\(settings, 'STATICFILES_STORAGE'\\)\\); from django.core.files.storage import default_storage; from django.contrib.staticfiles.storage import staticfiles_storage; print\\('static storage:', staticfiles_storage.__class__.__module__ + '.' + staticfiles_storage.__class__.__name__\\)\")",
+      "Bash(DJANGO_SETTINGS_MODULE=settings.production DJANGO_SECRET_KEY=x DJANGO_ALLOWED_HOSTS=example.com DJANGO_CSRF_TRUSTED_ORIGINS=https://example.com uv run python -c \"import django; django.setup\\(\\); from django.contrib.staticfiles.storage import staticfiles_storage; print\\(staticfiles_storage.__class__.__module__ + '.' + staticfiles_storage.__class__.__name__\\)\")",
+      "Bash(rm -rf /home/nakajito/proyectos/generador-contrasena/staticfiles)",
+      "Bash(DJANGO_SETTINGS_MODULE=settings.production DJANGO_SECRET_KEY=x DJANGO_ALLOWED_HOSTS=example.com DJANGO_CSRF_TRUSTED_ORIGINS=https://example.com uv run python manage.py collectstatic --noinput)",
+      "Bash(DJANGO_SETTINGS_MODULE=settings.production DJANGO_SECRET_KEY=x DJANGO_ALLOWED_HOSTS=example.com DJANGO_CSRF_TRUSTED_ORIGINS=https://example.com uv run python manage.py check --deploy --fail-level WARNING)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

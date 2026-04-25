@@ -9,12 +9,12 @@
         <meta name="referrer" content="same-origin" />
         <meta name="color-scheme" content="light" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="CRYPT_TYPE — Generador de Contraseñas Seguras" />
+        <meta property="og:title" content="CRYPT_TYPE — Generador de contraseñas seguras" />
         <meta property="og:description"
               content="Genera contraseñas criptográficamente seguras. Sin persistencia en servidor, sin tracking." />
-        <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+        <meta property="og:url" content="{{ request.build_absolute_uri '/' }}" />
         <meta name="twitter:card" content="summary" />
-        <link rel="canonical" href="{{ request.build_absolute_uri }}" />
+        <link rel="canonical" href="{{ request.build_absolute_uri '/' }}" />
         <title>
             {% block title %}CRYPT_TYPE — Generador de contraseñas{% endblock %}
         </title>

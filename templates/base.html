@@ -12,9 +12,9 @@
         <meta property="og:title" content="CRYPT_TYPE — Generador de contraseñas seguras" />
         <meta property="og:description"
               content="Genera contraseñas criptográficamente seguras. Sin persistencia en servidor, sin tracking." />
-        <meta property="og:url" content="{{ request.build_absolute_uri '/' }}" />
+        <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}/" />
         <meta name="twitter:card" content="summary" />
-        <link rel="canonical" href="{{ request.build_absolute_uri '/' }}" />
+        <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}/" />
         <title>
             {% block title %}CRYPT_TYPE — Generador de contraseñas{% endblock %}
         </title>

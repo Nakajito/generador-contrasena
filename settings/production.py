@@ -6,7 +6,13 @@ from .base import env
 DEBUG = False
 SECRET_KEY = env("DJANGO_SECRET_KEY")  # must be provided via env
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
-CSRF_TRUSTED_ORIGINS = env("DJANGO_CSRF_TRUSTED_ORIGINS")
+
+
+def _ensure_scheme(origin: str) -> str:
+    return origin if "://" in origin else f"https://{origin}"
+
+
+CSRF_TRUSTED_ORIGINS = [_ensure_scheme(o) for o in env("DJANGO_CSRF_TRUSTED_ORIGINS")]
 
 # HTTPS / transport
 SECURE_SSL_REDIRECT = True

@@ -11,6 +11,8 @@ coverage.xml
 .mypy_cache/
 .ruff_cache/
 tasks/
+.worktrees/
+.superpowers/
 
 # Created by https://www.toptal.com/developers/gitignore/api/linux,git,venv,windows,macos,django,pycharm,visualstudiocode,python,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,git,venv,windows,macos,django,pycharm,visualstudiocode,python,react

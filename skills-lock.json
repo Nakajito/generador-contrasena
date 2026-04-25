@@ -5,6 +5,16 @@
       "source": "vintasoftware/django-ai-plugins",
       "sourceType": "github",
       "computedHash": "a6b8c224017570496d688a526fcbea74025a01cc90d9afb0977bfcc1f76af306"
+    },
+    "responsive-design": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "0977c17696ab66ea613ce5b83c856bc7cd01332d98ae237dac7539840fe96187"
+    },
+    "tailwind-design-system": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "988d80e52c67c3692d43cc963b6a048a239895e88b272b061de55370d0f8efc3"
     }
   }
 }

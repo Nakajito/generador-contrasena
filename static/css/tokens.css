@@ -1,0 +1,24 @@
+/* Mechanical Key Gen — design tokens: custom properties + breakpoint variables */
+
+:root {
+    --color-bg: #e9e3df;
+    --color-surface: #fff8f6;
+    --color-surface-variant: #f5ded4;
+    --color-primary: #ff7a30;
+    --color-secondary: #465c88;
+    --color-on-surface: #000000;
+    --color-outline: #000000;
+    --color-muted: #58423880;
+    --color-error: #ba1a1a;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 48px;
+    --max-container: 640px;
+    --font-mono: "Courier Prime", "Courier New", ui-monospace, monospace;
+    --font-sans: "Space Grotesk", system-ui, sans-serif;
+    --bp-mobile: 480px;
+    --bp-tablet: 768px;
+    --bp-desktop: 1024px;
+}

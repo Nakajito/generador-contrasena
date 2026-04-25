@@ -203,7 +203,7 @@ input[type="range"]:focus-visible {
 }
 
 @media (min-width: 1024px) {
-  .checkbox-grid { grid-template-columns: 1fr 1fr 1fr; }
+    .checkbox-grid { grid-template-columns: 1fr 1fr 1fr; }
 }
 
 .checkbox {

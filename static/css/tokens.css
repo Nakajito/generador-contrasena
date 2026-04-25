@@ -18,6 +18,7 @@
     --max-container: 640px;
     --font-mono: "Courier Prime", "Courier New", ui-monospace, monospace;
     --font-sans: "Space Grotesk", system-ui, sans-serif;
+    /* reference only — @media conditions use literals; keep in sync manually */
     --bp-mobile: 480px;
     --bp-tablet: 768px;
     --bp-desktop: 1024px;

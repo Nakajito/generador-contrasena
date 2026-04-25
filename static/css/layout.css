@@ -11,6 +11,7 @@
 
 .topbar {
     border-bottom: 2px solid var(--color-outline);
+    background: var(--color-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -58,16 +59,12 @@
 
 /* ─── Responsive layout ───────────────────────────────────── */
 
-@media (min-width: 480px) {
-  /* mobile landscape — no layout changes needed at this point */
-}
-
 @media (min-width: 768px) {
-  .container { max-width: 720px; padding: 0 var(--space-xl); }
+    .container { max-width: 720px; padding: 0 var(--space-xl); }
 }
 
 @media (min-width: 1024px) {
-  .container { max-width: 800px; }
+    .container { max-width: 800px; }
 }
 
 /* sticky topbar for mobile */

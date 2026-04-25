@@ -40,11 +40,19 @@ RUN apt-get update \
 WORKDIR /app
 COPY --from=builder --chown=app:app /app /app
 
+# /app was created by WORKDIR as root; fix ownership so app user can write db.sqlite3 etc.
+# /app/data is the persistent-volume mount point for SQLite.
+RUN chown app:app /app \
+    && mkdir -p /app/data \
+    && chown app:app /app/data
+
 # Collect static under the production settings (requires SECRET_KEY — use a build-time dummy).
 RUN DJANGO_SECRET_KEY=build-dummy DJANGO_ALLOWED_HOSTS=localhost \
     python manage.py collectstatic --noinput
 
 USER app
+
+VOLUME ["/app/data"]
 
 EXPOSE 8000
 

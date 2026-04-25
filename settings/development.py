@@ -10,8 +10,13 @@ SECRET_KEY = env(
 )
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]  # noqa: S104
 
+# Plain static storage in dev: no hashing, no manifest, runserver-friendly.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
 # Relaxed CSP for dev: allow DevTools / hot reload if any.
 INTERNAL_IPS = ["127.0.0.1"]
-
-# Use non-manifest storage in dev (no collectstatic needed).
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"

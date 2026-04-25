@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description"
+              content="Generador de contraseñas seguras — cliente + API, cero persistencia servidor." />
+        <meta name="referrer" content="same-origin" />
+        <meta name="color-scheme" content="light" />
+        <title>
+            {% block title %}CRYPT_TYPE — Generador de contraseñas{% endblock %}
+        </title>
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body>
+        <header class="topbar container">
+            <div class="topbar__title">CRYPT_TYPE</div>
+            <nav aria-label="main">
+                <a class="btn btn--ghost btn--icon" href="{% url 'core:home' %}">Home</a>
+            </nav>
+        </header>
+        <main class="main container" id="main">
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="footer container">
+            <div>©{% now 'Y' %} CRYPT_TYPE</div>
+            <div>
+                <a href="https://github.com/">Open Source</a>
+            </div>
+        </footer>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        {% block extra_body %}{% endblock %}
+    </body>
+</html>

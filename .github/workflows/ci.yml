@@ -1,0 +1,123 @@
+name: CI
+
+on:
+    push:
+        branches: [main, dev]
+    pull_request:
+        branches: [main]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+env:
+    PYTHON_VERSION: "3.13"
+    UV_VERSION: "0.5.13"
+
+jobs:
+    lint:
+        name: Lint (ruff + djlint)
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v4
+              with:
+                  version: ${{ env.UV_VERSION }}
+                  enable-cache: true
+            - name: Install
+              run: uv sync --frozen --all-groups
+            - name: ruff check
+              run: uv run ruff check .
+            - name: ruff format --check
+              run: uv run ruff format --check .
+            - name: djlint
+              run: uv run djlint --check templates
+
+    typecheck:
+        name: Mypy
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v4
+              with:
+                  version: ${{ env.UV_VERSION }}
+                  enable-cache: true
+            - run: uv sync --frozen --all-groups
+            - run: uv run mypy core settings
+
+    security:
+        name: Security (bandit + pip-audit + gitleaks)
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - uses: astral-sh/setup-uv@v4
+              with:
+                  version: ${{ env.UV_VERSION }}
+                  enable-cache: true
+            - run: uv sync --frozen --all-groups
+            - name: bandit
+              run: uv run bandit -r core settings -c pyproject.toml
+            - name: pip-audit
+              run: uv run pip-audit --strict --ignore-vuln CVE-2026-3219
+            - name: gitleaks
+              uses: gitleaks/gitleaks-action@v2
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    test:
+        name: Tests + coverage
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v4
+            - uses: astral-sh/setup-uv@v4
+              with:
+                  version: ${{ env.UV_VERSION }}
+                  enable-cache: true
+            - run: uv sync --frozen --all-groups
+            - name: pytest
+              run: |
+                  uv run pytest \
+                      --cov=core \
+                      --cov-branch \
+                      --cov-report=term-missing \
+                      --cov-report=xml \
+                      --cov-fail-under=85
+            - name: Django check --deploy
+              env:
+                  DJANGO_SECRET_KEY: ci-dummy-not-a-real-secret
+                  DJANGO_ALLOWED_HOSTS: example.com
+                  DJANGO_CSRF_TRUSTED_ORIGINS: https://example.com
+                  DJANGO_SETTINGS_MODULE: settings.production
+              run: uv run python manage.py check --deploy --fail-level WARNING
+            - name: Upload coverage
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                  name: coverage-xml
+                  path: coverage.xml
+
+    docker:
+        name: Docker build
+        needs: [lint, typecheck, security, test]
+        runs-on: ubuntu-24.04
+        steps:
+            - uses: actions/checkout@v4
+            - uses: docker/setup-buildx-action@v3
+            - name: Build image (no push)
+              uses: docker/build-push-action@v6
+              with:
+                  context: .
+                  file: docker/Dockerfile
+                  push: false
+                  tags: generador-contrasena:ci
+                  cache-from: type=gha
+                  cache-to: type=gha,mode=max
+            - name: Trivy vulnerability scan
+              uses: aquasecurity/trivy-action@0.28.0
+              with:
+                  image-ref: generador-contrasena:ci
+                  severity: HIGH,CRITICAL
+                  exit-code: "1"
+                  ignore-unfixed: true

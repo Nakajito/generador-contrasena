@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv sync *)",
+      "Bash(uv pip *)",
+      "Bash(DJANGO_SETTINGS_MODULE=settings.test uv run python -c \"import django; django.setup\\(\\); from django.conf import settings; print\\('OK', settings.DEBUG, settings.INSTALLED_APPS[-2:]\\)\")",
+      "Bash(uv run *)",
+      "Bash(chmod +x /home/nakajito/proyectos/generador-contrasena/docker/entrypoint.sh)"
+    ]
+  }
+}

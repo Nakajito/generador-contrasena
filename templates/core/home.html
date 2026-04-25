@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Generador de contraseñas seguras{% endblock %}
+{% block content %}
+    <section class="card password-display" aria-labelledby="output-label">
+        <h1 class="sr-only" id="output-label">Contraseña generada</h1>
+        <output class="password-display__value"
+                id="password-output"
+                aria-live="polite">—</output>
+        <div class="password-display__actions">
+            <button class="btn btn--icon"
+                    id="copy-btn"
+                    type="button"
+                    aria-label="Copiar contraseña">Copy</button>
+            <button class="btn btn--icon btn--primary"
+                    id="regenerate-btn"
+                    type="button"
+                    aria-label="Regenerar">↻</button>
+        </div>
+    </section>
+    <form class="card controls"
+          id="policy-form"
+          onsubmit="return false"
+          aria-label="Opciones del generador">
+        <div>
+            <div class="control__head">
+                <label class="control__label" for="length">Longitud</label>
+                <span class="control__value" id="length-value">16</span>
+            </div>
+            <input type="range" id="length" name="length" min="8" max="128" value="16" />
+        </div>
+        <div class="divider"></div>
+        <div class="checkbox-grid">
+            <label class="checkbox">
+                <input type="checkbox" id="uppercase" checked />
+                <span class="checkbox__label">Mayúsculas</span>
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" id="lowercase" checked />
+                <span class="checkbox__label">Minúsculas</span>
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" id="numbers" checked />
+                <span class="checkbox__label">Números</span>
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" id="symbols" checked />
+                <span class="checkbox__label">Símbolos</span>
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" id="exclude-ambiguous" />
+                <span class="checkbox__label">Sin ambiguos</span>
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" id="use-server" />
+                <span class="checkbox__label">Usar API servidor</span>
+            </label>
+        </div>
+    </form>
+    <section class="card strength" id="strength" data-level="0" aria-live="polite">
+        <span class="strength__label">Fuerza</span>
+        <div class="strength__meta">
+            <span class="strength__level" id="strength-level">—</span>
+            <span class="strength__label" id="strength-entropy">0 bits</span>
+        </div>
+        <div class="strength__bars" id="strength-bars" aria-hidden="true">
+            <div class="strength__bar"></div>
+            <div class="strength__bar"></div>
+            <div class="strength__bar"></div>
+            <div class="strength__bar"></div>
+        </div>
+    </section>
+    <button class="btn btn--primary btn--block" id="generate-btn" type="button">Generar contraseña →</button>
+    <section class="card history" aria-labelledby="history-title">
+        <div class="control__head">
+            <h2 class="history__title" id="history-title">Historial local</h2>
+            <button class="btn btn--ghost btn--icon" id="history-clear" type="button">Limpiar</button>
+        </div>
+        <ul class="history__list" id="history-list">
+        </ul>
+    </section>
+{% endblock %}
+{% block extra_body %}
+    <script type="module" src="{% static 'js/app.js' %}"></script>
+{% endblock %}

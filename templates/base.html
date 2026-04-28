@@ -17,6 +17,7 @@
               content="{{ request.scheme }}://{{ request.get_host }}/" />
         <meta name="twitter:card" content="summary" />
         <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}/" />
+        <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
         <title>
             {% block title %}CRYPT_TYPE — Generador de contraseñas{% endblock %}
         </title>

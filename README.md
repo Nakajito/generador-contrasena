@@ -1,8 +1,12 @@
-# Generador de Contraseñas — CRYPT_TYPE
+# Generador de Contraseñas — ROBUSTA
 
 Generador de contraseñas seguras con arquitectura **doble**:
-- **Cliente** — JS con `crypto.getRandomValues` (rechazo-muestreo sin sesgo).
-- **Servidor** — Django REST con `secrets.SystemRandom`.
+- **Cliente** — JS con `crypto.getRandomValues` (rechazo-muestreo sin sesgo). Es
+  el único camino que usa el frontend (`templates/core/home.html`) — el hero de
+  la página anuncia "100% en tu navegador, sin servidores de por medio".
+- **Servidor** — Django REST con `secrets.SystemRandom`, disponible como API
+  standalone (`/api/v1/generate`) para integraciones externas; no está cableado
+  a la UI.
 
 El historial vive **solo en el navegador** (IndexedDB). El servidor no persiste
 contraseñas en ningún momento.
@@ -133,7 +137,8 @@ core/
 settings/
     base.py development.py production.py test.py
 static/js/           # Módulos ES: generator, strength, history, app
-static/css/main.css  # Tema brutalista/typewriter sin dependencias
+static/css/          # tokens/base/layout/components — tema ROBUSTA (dark), sin dependencias
+static/fonts/        # Manrope + JetBrains Mono self-hosted (CSP: sin CDN de fuentes)
 docker/              # Dockerfile + entrypoint
 .github/workflows/   # ci.yml (lint·type·security·test·docker), docker.yml (release)
 ```

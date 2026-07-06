@@ -64,6 +64,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "settings.wsgi.application"
 ASGI_APPLICATION = "settings.asgi.application"
 
+
+# Docker creates this as a persistent-volume mount point (see docker/Dockerfile);
+# local dev has no such step, so ensure it exists before sqlite tries to open it.
+(BASE_DIR / "data").mkdir(parents=True, exist_ok=True)
+
 DATABASES = {
     "default": env.db_url(
         "DATABASE_URL",

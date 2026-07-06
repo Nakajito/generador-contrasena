@@ -1,97 +1,178 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Generador de contraseñas seguras{% endblock %}
+{% block title %}ROBUSTA — Generador de contraseñas seguras{% endblock %}
 {% block extra_head %}
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "CRYPT_TYPE — Generador de contraseñas",
+  "name": "ROBUSTA — Generador de contraseñas",
   "applicationCategory": "SecurityApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "description": "Genera contraseñas criptográficamente seguras. Sin persistencia en servidor, sin tracking.",
+  "description": "Genera contraseñas criptográficamente seguras y entiende qué tan robustas son. Sin persistencia en servidor, sin tracking.",
   "inLanguage": "es"
 }
     </script>
 {% endblock %}
 {% block content %}
-    <section class="card password-display" aria-labelledby="output-label">
-        <h1 class="sr-only" id="output-label">Contraseña generada</h1>
-        <output class="password-display__value"
-                id="password-output"
-                aria-live="polite">—</output>
-        <div class="password-display__actions">
-            <button class="btn btn--icon"
-                    id="copy-btn"
-                    type="button"
-                    aria-label="Copiar contraseña">Copy</button>
-            <button class="btn btn--icon btn--primary"
-                    id="regenerate-btn"
-                    type="button"
-                    aria-label="Regenerar">↻</button>
+    <section class="hero">
+        <div class="hero__badge">
+            <span class="hero__badge-dot"></span>
+            100% en tu navegador, sin servidores de por medio
         </div>
-    </section>
-    <form class="card controls"
-          id="policy-form"
-          onsubmit="return false"
-          aria-label="Opciones del generador">
-        <div>
-            <div class="control__head">
-                <label class="control__label" for="length">Longitud</label>
-                <span class="control__value" id="length-value">16</span>
+        <h1 class="hero__title">Contraseñas fuertes,<br />explicadas en simple.</h1>
+        <p class="hero__subtitle">
+            Genera claves seguras y entiende exactamente qué tan robustas son — sin jerga técnica, sin registrarte, sin que nada salga de tu navegador.
+        </p>
+        <div class="hero__bullets">
+            <div class="hero__bullet">
+                <span aria-hidden="true">🔐</span>
+                <span>Generación criptográfica (crypto.getRandomValues)</span>
             </div>
-            <input type="range" id="length" name="length" min="8" max="128" value="16" />
-        </div>
-        <div class="divider"></div>
-        <div class="checkbox-grid">
-            <label class="checkbox">
-                <input type="checkbox" id="uppercase" checked />
-                <span class="checkbox__label">Mayúsculas</span>
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="lowercase" checked />
-                <span class="checkbox__label">Minúsculas</span>
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="numbers" checked />
-                <span class="checkbox__label">Números</span>
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="symbols" checked />
-                <span class="checkbox__label">Símbolos</span>
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="exclude-ambiguous" />
-                <span class="checkbox__label">Sin ambiguos</span>
-            </label>
-            <label class="checkbox">
-                <input type="checkbox" id="use-server" />
-                <span class="checkbox__label">Usar API servidor</span>
-            </label>
-        </div>
-    </form>
-    <section class="card strength" id="strength" data-level="0" aria-live="polite">
-        <span class="strength__label">Fuerza</span>
-        <div class="strength__meta">
-            <span class="strength__level" id="strength-level">—</span>
-            <span class="strength__label" id="strength-entropy">0 bits</span>
-        </div>
-        <div class="strength__bars" id="strength-bars" aria-hidden="true">
-            <div class="strength__bar"></div>
-            <div class="strength__bar"></div>
-            <div class="strength__bar"></div>
-            <div class="strength__bar"></div>
+            <div class="hero__bullet">
+                <span aria-hidden="true">💾</span>
+                <span>Historial solo local</span>
+            </div>
+            <div class="hero__bullet">
+                <span aria-hidden="true">✨</span>
+                <span>Gratis, sin cuentas</span>
+            </div>
         </div>
     </section>
-    <button class="btn btn--primary btn--block" id="generate-btn" type="button">Generar contraseña →</button>
-    <section class="card history" aria-labelledby="history-title">
-        <div class="control__head">
-            <h2 class="history__title" id="history-title">Historial local</h2>
-            <button class="btn btn--ghost btn--icon" id="history-clear" type="button">Limpiar</button>
+
+    <section id="generador">
+        <div class="card generator__panel">
+            <div class="password-display">
+                <h2 class="sr-only" id="output-label">Contraseña generada</h2>
+                <output class="password-display__value"
+                        id="password-output"
+                        aria-live="polite">—</output>
+                <div class="password-display__actions">
+                    <button class="btn btn--icon"
+                            id="copy-btn"
+                            type="button"
+                            aria-label="Copiar contraseña">📋</button>
+                    <button class="btn btn--icon btn--accent"
+                            id="regenerate-btn"
+                            type="button"
+                            aria-label="Regenerar">↻</button>
+                </div>
+            </div>
+
+            <section class="strength" id="strength" data-level="0" aria-live="polite">
+                <div class="strength__top">
+                    <span class="strength__level" id="strength-level">—</span>
+                    <span class="strength__entropy" id="strength-entropy">0 bits de entropía</span>
+                </div>
+                <div class="strength__track">
+                    <div class="strength__fill" id="strength-fill"></div>
+                </div>
+                <p class="strength__crack-time">
+                    Tiempo estimado para adivinarla por fuerza bruta:
+                    <strong id="strength-crack-time">—</strong>
+                </p>
+            </section>
+
+            <form class="controls"
+                  id="policy-form"
+                  onsubmit="return false"
+                  aria-label="Opciones del generador">
+                <div>
+                    <div class="control__head">
+                        <label class="control__label" for="length">Longitud</label>
+                        <span class="control__value" id="length-value">16</span>
+                    </div>
+                    <input type="range" id="length" name="length" min="8" max="128" value="16" />
+                </div>
+                <div class="switch-grid">
+                    <label class="switch-row" for="uppercase">
+                        <span>Mayúsculas <code>ABC</code></span>
+                        <span class="switch">
+                            <input type="checkbox" id="uppercase" checked />
+                            <span class="switch__track"><span class="switch__knob"></span></span>
+                        </span>
+                    </label>
+                    <label class="switch-row" for="lowercase">
+                        <span>Minúsculas <code>abc</code></span>
+                        <span class="switch">
+                            <input type="checkbox" id="lowercase" checked />
+                            <span class="switch__track"><span class="switch__knob"></span></span>
+                        </span>
+                    </label>
+                    <label class="switch-row" for="numbers">
+                        <span>Números <code>123</code></span>
+                        <span class="switch">
+                            <input type="checkbox" id="numbers" checked />
+                            <span class="switch__track"><span class="switch__knob"></span></span>
+                        </span>
+                    </label>
+                    <label class="switch-row" for="symbols">
+                        <span>Símbolos <code>#%&amp;</code></span>
+                        <span class="switch">
+                            <input type="checkbox" id="symbols" checked />
+                            <span class="switch__track"><span class="switch__knob"></span></span>
+                        </span>
+                    </label>
+                    <label class="switch-row" for="exclude-ambiguous">
+                        <span>Excluir ambiguos <code>Il1O0</code></span>
+                        <span class="switch">
+                            <input type="checkbox" id="exclude-ambiguous" />
+                            <span class="switch__track"><span class="switch__knob"></span></span>
+                        </span>
+                    </label>
+                </div>
+            </form>
+
+            <button class="btn btn--primary btn--block" id="generate-btn" type="button">
+                Generar nueva contraseña →
+            </button>
         </div>
-        <ul class="history__list" id="history-list">
-        </ul>
+    </section>
+
+    <section id="historial" aria-labelledby="history-title">
+        <div class="history-section__head">
+            <div>
+                <h2 class="history-section__title" id="history-title">Historial local</h2>
+                <p class="history-section__subtitle">
+                    Guardado solo en este navegador — nunca se envía a ningún servidor.
+                </p>
+            </div>
+            <button class="btn btn--ghost" id="history-clear" type="button">Limpiar todo</button>
+        </div>
+        <ul class="history__list" id="history-list"></ul>
+    </section>
+
+    <section id="como-funciona">
+        <div class="explainer__intro">
+            <h2>¿Cómo medimos la robustez?</h2>
+            <p>
+                Nada de magia: usamos entropía, el mismo concepto que usan los expertos en seguridad para medir cuánto tardaría alguien en adivinar tu contraseña por fuerza bruta.
+            </p>
+        </div>
+        <div class="explainer__grid">
+            <div class="explainer__card">
+                <div class="explainer__icon">📏</div>
+                <h3>Longitud</h3>
+                <p>Cada carácter extra multiplica el número de combinaciones posibles. 16 caracteres es un buen mínimo hoy en día.</p>
+            </div>
+            <div class="explainer__card">
+                <div class="explainer__icon">🎲</div>
+                <h3>Variedad</h3>
+                <p>Mezclar mayúsculas, minúsculas, números y símbolos amplía el conjunto de caracteres posibles en cada posición.</p>
+            </div>
+            <div class="explainer__card">
+                <div class="explainer__icon">🧮</div>
+                <h3>Entropía (bits)</h3>
+                <p>Combina longitud y variedad en un solo número. Más bits = exponencialmente más intentos necesarios para adivinar.</p>
+            </div>
+        </div>
+        <div class="legend">
+            <span class="legend__chip" data-level="1"><span class="legend__dot"></span>&lt; 40 bits · Débil</span>
+            <span class="legend__chip" data-level="2"><span class="legend__dot"></span>40–59 bits · Media</span>
+            <span class="legend__chip" data-level="3"><span class="legend__dot"></span>60–79 bits · Fuerte</span>
+            <span class="legend__chip" data-level="4"><span class="legend__dot"></span>80+ bits · Muy fuerte</span>
+        </div>
     </section>
 {% endblock %}
 {% block extra_body %}

@@ -1,23 +1,39 @@
-/* Mechanical Key Gen — design tokens: custom properties + breakpoint variables */
+/* ROBUSTA — design tokens: custom properties + breakpoint variables */
 
 :root {
-    --color-bg: #e9e3df;
-    --color-surface: #fff8f6;
-    --color-surface-variant: #f5ded4;
-    --color-primary: #ff7a30;
-    --color-secondary: #465c88;
-    --color-on-surface: #000000;
-    --color-outline: #000000;
-    --color-muted: #58423880;
-    --color-error: #ba1a1a;
+    --color-bg: #0B192C;
+    --color-surface: #1E3E62;
+    --color-surface-alt: #0B192C;
+    --color-primary: #FF6500;
+    --color-secondary: #5A9BE0;
+    --color-on-surface: #F5E9D8;
+    --color-outline: rgba(245, 233, 216, 0.1);
+    --color-muted: rgba(245, 233, 216, 0.6);
+    --color-error: oklch(0.62 0.19 25);
+
+    --color-level-weak: oklch(0.62 0.19 25);
+    --color-level-fair: oklch(0.75 0.15 85);
+    --color-level-strong: oklch(0.6 0.15 150);
+    --color-level-excellent: #5A9BE0;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-pill: 99px;
+
     --space-xs: 4px;
     --space-sm: 8px;
     --space-md: 16px;
     --space-lg: 24px;
     --space-xl: 48px;
-    --max-container: 640px;
-    --font-mono: "Courier Prime", "Courier New", ui-monospace, monospace;
-    --font-sans: "Space Grotesk", system-ui, sans-serif;
+
+    --max-container: 900px;
+    --max-container-wide: 1200px;
+
+    --font-mono: "JetBrains Mono", "Courier New", ui-monospace, monospace;
+    --font-sans: "Manrope", system-ui, sans-serif;
+
     /* reference only — @media conditions use literals; keep in sync manually */
     --bp-mobile: 480px;
     --bp-tablet: 768px;

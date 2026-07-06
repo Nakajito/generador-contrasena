@@ -33,6 +33,8 @@ export async function add(entry) {
         const req = tx(db, "readwrite").add({
             value: entry.value,
             strength: entry.strength,
+            level: entry.level,
+            entropyBits: entry.entropyBits,
             length: entry.length,
             createdAt: Date.now(),
         });

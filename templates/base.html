@@ -5,21 +5,21 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description"
-              content="Generador de contraseñas seguras — cliente + API, cero persistencia servidor." />
+              content="Genera contraseñas robustas y entiende su nivel de seguridad — 100% en tu navegador, sin registro." />
         <meta name="referrer" content="same-origin" />
-        <meta name="color-scheme" content="light" />
+        <meta name="color-scheme" content="dark" />
         <meta property="og:type" content="website" />
         <meta property="og:title"
-              content="CRYPT_TYPE — Generador de contraseñas seguras" />
+              content="ROBUSTA — Generador de contraseñas seguras" />
         <meta property="og:description"
-              content="Genera contraseñas criptográficamente seguras. Sin persistencia en servidor, sin tracking." />
+              content="Genera contraseñas criptográficamente seguras y entiende qué tan robustas son. Sin persistencia en servidor, sin tracking." />
         <meta property="og:url"
               content="{{ request.scheme }}://{{ request.get_host }}/" />
         <meta name="twitter:card" content="summary" />
         <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}/" />
         <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
         <title>
-            {% block title %}CRYPT_TYPE — Generador de contraseñas{% endblock %}
+            {% block title %}ROBUSTA — Generador de contraseñas{% endblock %}
         </title>
         <link rel="stylesheet" href="{% static 'css/tokens.css' %}" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
@@ -28,20 +28,23 @@
         {% block extra_head %}{% endblock %}
     </head>
     <body>
-        <header class="topbar container">
-            <div class="topbar__title">CRYPT_TYPE</div>
-            <nav aria-label="main">
-                <a class="btn btn--ghost btn--icon" href="{% url 'core:home' %}">Home</a>
+        <header class="topbar container container--wide">
+            <a class="topbar__brand" href="{% url 'core:home' %}">
+                <span class="topbar__mark"><span class="topbar__mark-dot"></span></span>
+                <span class="topbar__title">ROBUSTA</span>
+            </a>
+            <nav class="topbar__nav" aria-label="main">
+                <a href="#generador">Generador</a>
+                <a href="#historial">Historial</a>
+                <a href="#como-funciona">Cómo funciona</a>
             </nav>
         </header>
         <main class="main container" id="main">
             {% block content %}{% endblock %}
         </main>
-        <footer class="footer container">
-            <div>©{% now 'Y' %} CRYPT_TYPE</div>
-            <div>
-                <a href="https://github.com/">Open Source</a>
-            </div>
+        <footer class="footer container container--wide">
+            <span>© {% now 'Y' %} ROBUSTA · Generado localmente · sin tracking</span>
+            <a href="https://github.com/">Open Source</a>
         </footer>
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
         {% block extra_body %}{% endblock %}

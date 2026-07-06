@@ -1,8 +1,8 @@
-// UI controller. Wires DOM → generator / strength / history / API.
+// UI controller. Wires DOM → generator / strength / history.
 // CSP-safe: no inline handlers, only delegated listeners from this module.
 
 import { generatePassword, MIN_LENGTH, MAX_LENGTH } from "./generator.js";
-import { evaluate } from "./strength.js";
+import { evaluate, colorForLevel, formatCrackTime } from "./strength.js";
 import * as history from "./history.js";
 
 const SELECTORS = {
@@ -16,18 +16,20 @@ const SELECTORS = {
     output: "#password-output",
     strength: "#strength",
     strengthLevel: "#strength-level",
-    strengthBars: "#strength-bars",
+    strengthFill: "#strength-fill",
+    strengthCrackTime: "#strength-crack-time",
     entropy: "#strength-entropy",
     generate: "#generate-btn",
     copy: "#copy-btn",
     regenerate: "#regenerate-btn",
-    useServer: "#use-server",
     historyList: "#history-list",
     historyClear: "#history-clear",
     toast: "#toast",
 };
 
 const $ = (sel) => document.querySelector(sel);
+
+let pulseTimer;
 
 function readPolicy() {
     return {
@@ -42,14 +44,23 @@ function readPolicy() {
 
 function renderStrength(policy) {
     const res = evaluate(policy);
-    const strengthEl = $(SELECTORS.strength);
-    strengthEl.dataset.level = String(res.level);
+    const color = colorForLevel(res.level);
+    $(SELECTORS.strength).dataset.level = String(res.level);
     $(SELECTORS.strengthLevel).textContent = res.label;
-    $(SELECTORS.entropy).textContent = `${res.bits.toFixed(1)} bits`;
-    const bars = $(SELECTORS.strengthBars).children;
-    for (let i = 0; i < bars.length; i++) {
-        bars[i].classList.toggle("strength__bar--filled", i < res.level);
-    }
+    $(SELECTORS.strengthLevel).style.color = color;
+    $(SELECTORS.entropy).textContent = `${res.bits.toFixed(1)} bits de entropía`;
+    $(SELECTORS.strengthFill).style.width = `${Math.min(100, (res.bits / 100) * 100)}%`;
+    $(SELECTORS.strengthFill).style.background = color;
+    $(SELECTORS.strengthCrackTime).textContent = formatCrackTime(res.bits);
+    return res;
+}
+
+function pulsePasswordDisplay() {
+    const el = $(SELECTORS.output).closest(".password-display");
+    if (!el) return;
+    el.classList.add("password-display--pulse");
+    clearTimeout(pulseTimer);
+    pulseTimer = setTimeout(() => el.classList.remove("password-display--pulse"), 320);
 }
 
 function showToast(message) {
@@ -59,59 +70,24 @@ function showToast(message) {
     setTimeout(() => toast.classList.remove("toast--visible"), 1600);
 }
 
-function csrfToken() {
-    const match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
-    return match ? decodeURIComponent(match[1]) : "";
-}
-
-async function generateViaServer(policy) {
-    const payload = {
-        length: policy.length,
-        uppercase: policy.uppercase,
-        lowercase: policy.lowercase,
-        numbers: policy.numbers,
-        symbols: policy.symbols,
-        exclude_ambiguous: policy.excludeAmbiguous,
-    };
-    const res = await fetch("/api/v1/generate", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken(),
-        },
-        body: JSON.stringify(payload),
-        credentials: "same-origin",
-    });
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.detail || `API error ${res.status}`);
-    }
-    return res.json();
-}
-
 async function doGenerate() {
     const policy = readPolicy();
     let pw;
-    let meta;
     try {
-        if ($(SELECTORS.useServer).checked) {
-            const resp = await generateViaServer(policy);
-            pw = resp.password;
-            meta = { level: null, label: resp.strength, bits: resp.entropy_bits };
-        } else {
-            pw = generatePassword(policy);
-            meta = evaluate(policy);
-        }
+        pw = generatePassword(policy);
     } catch (err) {
-        showToast(err.message || "generation failed");
+        showToast(err.message || "no se pudo generar");
         return;
     }
     $(SELECTORS.output).textContent = pw;
-    renderStrength(policy);
+    const meta = renderStrength(policy);
+    pulsePasswordDisplay();
     try {
         await history.add({
             value: pw,
             strength: meta.label,
+            level: meta.level,
+            entropyBits: Math.round(meta.bits),
             length: policy.length,
         });
     } catch {
@@ -125,9 +101,9 @@ async function copyCurrent() {
     if (!pw || pw.trim() === "—") return;
     try {
         await navigator.clipboard.writeText(pw);
-        showToast("copied");
+        showToast("copiado");
     } catch {
-        showToast("clipboard blocked");
+        showToast("portapapeles bloqueado");
     }
 }
 
@@ -144,33 +120,46 @@ async function renderHistory() {
     if (!items.length) {
         const empty = document.createElement("li");
         empty.className = "history__empty";
-        empty.textContent = "no entries yet";
+        empty.textContent = "Aún no hay contraseñas generadas en esta sesión.";
         list.appendChild(empty);
         return;
     }
     for (const item of items) {
         const li = document.createElement("li");
         li.className = "history__item";
+
+        const main = document.createElement("span");
+        main.className = "history__item-main";
+
+        const dot = document.createElement("span");
+        dot.className = "history__dot";
+        dot.style.background = colorForLevel(item.level);
+
         const value = document.createElement("span");
         value.className = "history__value history__value--masked";
         value.textContent = item.value;
-        value.title = "hover to reveal";
+        value.title = "pasa el mouse para revelar";
+
+        main.append(dot, value);
+
         const meta = document.createElement("span");
-        meta.textContent = `${item.length}ch · ${item.strength}`;
+        meta.className = "history__meta";
+        meta.textContent = `${item.entropyBits ?? "—"} bits · ${item.length}ch`;
+
         const copyBtn = document.createElement("button");
         copyBtn.type = "button";
         copyBtn.className = "btn btn--ghost btn--icon";
-        copyBtn.textContent = "copy";
-        copyBtn.setAttribute("aria-label", "copy this password");
+        copyBtn.textContent = "📋";
+        copyBtn.setAttribute("aria-label", "copiar esta contraseña");
         copyBtn.addEventListener("click", async () => {
             try {
                 await navigator.clipboard.writeText(item.value);
-                showToast("copied");
+                showToast("copiado");
             } catch {
-                showToast("clipboard blocked");
+                showToast("portapapeles bloqueado");
             }
         });
-        li.append(value, meta, copyBtn);
+        li.append(main, meta, copyBtn);
         list.appendChild(li);
     }
 }
@@ -185,9 +174,9 @@ function ensureAtLeastOneClass() {
     if (!anyChecked) {
         // Re-enable uppercase as fallback.
         $(SELECTORS.uppercase).checked = true;
-        showToast("at least one class required");
+        showToast("se requiere al menos una opción");
     }
-    renderStrength(readPolicy());
+    doGenerate();
 }
 
 function init() {
@@ -196,12 +185,15 @@ function init() {
     length.max = String(MAX_LENGTH);
 
     syncLengthLabel();
-    renderStrength(readPolicy());
 
+    // Live label + strength preview while dragging, actual regeneration once
+    // the drag/keypress settles — regenerating (and writing to history) on
+    // every "input" tick would flood the history with in-between lengths.
     length.addEventListener("input", () => {
         syncLengthLabel();
         renderStrength(readPolicy());
     });
+    length.addEventListener("change", doGenerate);
 
     ["uppercase", "lowercase", "numbers", "symbols", "excludeAmbiguous"].forEach(
         (key) => {
@@ -218,11 +210,11 @@ function init() {
         clearBtn.addEventListener("click", async () => {
             await history.clear();
             await renderHistory();
-            showToast("history cleared");
+            showToast("historial borrado");
         });
     }
 
-    renderHistory();
+    doGenerate();
 }
 
 if (document.readyState === "loading") {

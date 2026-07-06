@@ -86,7 +86,7 @@ jobs:
                       --cov-fail-under=85
             - name: Django check --deploy
               env:
-                  DJANGO_SECRET_KEY: ci-dummy-not-a-real-secret
+                  DJANGO_SECRET_KEY: ci-dummy-not-a-real-secret-but-long-enough-to-pass-django-check
                   DJANGO_ALLOWED_HOSTS: example.com
                   DJANGO_CSRF_TRUSTED_ORIGINS: https://example.com
                   DJANGO_SETTINGS_MODULE: settings.production

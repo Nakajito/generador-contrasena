@@ -6,7 +6,7 @@ from .base import env
 DEBUG = True
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
-    default="django-insecure-dev-only-change-in-prod",
+    default="<V?q2X<+T[ehWEiSB}rqfw~=={qexm7nN6BK^]/#a+uR/P1_3Wm_AE1O+4m}9Qu(Qyt}1=zn7W<",
 )
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]  # noqa: S104
 

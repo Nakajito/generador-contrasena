@@ -18,9 +18,7 @@
         <meta name="twitter:card" content="summary" />
         <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}/" />
         <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
-        <title>
-            {% block title %}ROBUSTA — Generador de contraseñas{% endblock %}
-        </title>
+        <title>{% block title %}ROBUSTA — Generador de contraseñas{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'css/tokens.css' %}" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link rel="stylesheet" href="{% static 'css/layout.css' %}" />

@@ -21,7 +21,11 @@
             <span class="hero__badge-dot"></span>
             100% en tu navegador, sin servidores de por medio
         </div>
-        <h1 class="hero__title">Contraseñas fuertes,<br />explicadas en simple.</h1>
+        <h1 class="hero__title">
+            Contraseñas fuertes,
+            <br />
+            explicadas en simple.
+        </h1>
         <p class="hero__subtitle">
             Genera claves seguras y entiende exactamente qué tan robustas son — sin jerga técnica, sin registrarte, sin que nada salga de tu navegador.
         </p>
@@ -40,7 +44,6 @@
             </div>
         </div>
     </section>
-
     <section id="generador">
         <div class="card generator__panel">
             <div class="password-display">
@@ -59,7 +62,6 @@
                             aria-label="Regenerar">↻</button>
                 </div>
             </div>
-
             <section class="strength" id="strength" data-level="0" aria-live="polite">
                 <div class="strength__top">
                     <span class="strength__level" id="strength-level">—</span>
@@ -73,7 +75,6 @@
                     <strong id="strength-crack-time">—</strong>
                 </p>
             </section>
-
             <form class="controls"
                   id="policy-form"
                   onsubmit="return false"
@@ -123,26 +124,20 @@
                     </label>
                 </div>
             </form>
-
-            <button class="btn btn--primary btn--block" id="generate-btn" type="button">
-                Generar nueva contraseña →
-            </button>
+            <button class="btn btn--primary btn--block" id="generate-btn" type="button">Generar nueva contraseña →</button>
         </div>
     </section>
-
     <section id="historial" aria-labelledby="history-title">
         <div class="history-section__head">
             <div>
                 <h2 class="history-section__title" id="history-title">Historial local</h2>
-                <p class="history-section__subtitle">
-                    Guardado solo en este navegador — nunca se envía a ningún servidor.
-                </p>
+                <p class="history-section__subtitle">Guardado solo en este navegador — nunca se envía a ningún servidor.</p>
             </div>
             <button class="btn btn--ghost" id="history-clear" type="button">Limpiar todo</button>
         </div>
-        <ul class="history__list" id="history-list"></ul>
+        <ul class="history__list" id="history-list">
+        </ul>
     </section>
-
     <section id="como-funciona">
         <div class="explainer__intro">
             <h2>¿Cómo medimos la robustez?</h2>
@@ -164,7 +159,9 @@
             <div class="explainer__card">
                 <div class="explainer__icon">🧮</div>
                 <h3>Entropía (bits)</h3>
-                <p>Combina longitud y variedad en un solo número. Más bits = exponencialmente más intentos necesarios para adivinar.</p>
+                <p>
+                    Combina longitud y variedad en un solo número. Más bits = exponencialmente más intentos necesarios para adivinar.
+                </p>
             </div>
         </div>
         <div class="legend">

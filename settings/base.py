@@ -17,7 +17,10 @@ env_file = BASE_DIR / ".env"
 if env_file.exists():
     environ.Env.read_env(str(env_file))
 
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="insecure-override-me")
+SECRET_KEY = env(
+    "DJANGO_SECRET_KEY",
+    default="<V?q2X<+T[ehWEiSB}rqfw~=={qexm7nN6BK^]/#a+uR/P1_3Wm_AE1O+4m}9Qu(Qyt}1=zn7W<",
+)
 DEBUG = env("DJANGO_DEBUG")
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 
